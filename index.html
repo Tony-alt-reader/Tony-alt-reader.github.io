@@ -70,6 +70,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0}
 .bar>i{display:block;height:100%;background:var(--violet);border-radius:var(--radius-pill)}
 main{padding-bottom:calc(env(safe-area-inset-bottom) + 64px)}
 section{margin-top:var(--space-6)}
+.grstat{margin-top:var(--space-3);font-size:12px;color:var(--on-deep-muted);min-height:16px}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);margin-top:var(--space-4)}
 .tile{background:rgba(255,255,255,.08);border-radius:var(--radius-md);padding:var(--space-3)}
 .tile b{display:block;font:600 22px/28px var(--display);color:var(--on-deep)}
@@ -142,13 +143,13 @@ PATHS.forEach(p=>p.rungs.forEach(b=>{(appears[b.id] ||= []).push(p.id)}));
 const ICON = '<svg viewBox="0 0 1024 1024" aria-hidden="true"><rect width="1024" height="1024" fill="#2c1670"/><circle cx="820" cy="190" r="300" fill="#3a1f8f"/><path d="M230 840 C 120 640, 560 690, 500 500 S 720 300, 780 230" fill="none" stroke="#b39dff" stroke-width="64" stroke-linecap="round" stroke-dasharray="2 112" stroke-dashoffset="-100"/><circle cx="780" cy="230" r="70" fill="#fff"/><circle cx="230" cy="840" r="46" fill="#f08fbf"/></svg>';
 
 // ---------- progress ----------
-let state = {done:{}, asg:{}, rev:0};
+let state = {done:{}, asg:{}, rev:0, gr:{}};
 const LS_KEY = 'reading-paths-progress-v1';
 function lsRead(){ try{ const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }catch(e){ return null; } }
 function lsWrite(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
 function migrate(){ let changed=false; if((state.rev||0)<(D.rev||0)){ (D.unread||[]).forEach(id=>{ if(state.done[id]){ state.done[id]=0; changed=true; } }); state.rev=D.rev; changed=true; } return changed; }
 function applyDefaults(){ Object.entries(B).forEach(([id,b])=>{ if(b.r && !(id in state.done)) state.done[id]=1; }); }
-const local = lsRead(); if(local && local.done) state = {done:local.done||{}, asg:local.asg||{}, rev:local.rev||0};
+const local = lsRead(); if(local && local.done) state = {done:local.done||{}, asg:local.asg||{}, rev:local.rev||0, gr:local.gr||{}};
 migrate(); applyDefaults(); lsWrite();
 
 let syncKind='', syncText='On this device';
@@ -158,7 +159,7 @@ function scheduleSave(){ lsWrite(); if(!ref) return; dirty=true; clearTimeout(ti
 async function flush(){
   if(!ref||writing||!dirty) return;
   writing=true; dirty=false; setSync('','Saving…');
-  try{ await ref.set({done:state.done, asg:state.asg, rev:state.rev||0, updated:new Date().toISOString()}); setSync('ok','Synced'); }
+  try{ await ref.set({done:state.done, asg:state.asg, rev:state.rev||0, gr:state.gr||{}, updated:new Date().toISOString()}); setSync('ok','Synced'); }
   catch(e){ if(e&&e.code==='unavailable'){ dirty=true; setTimeout(flush,1500+Math.random()*1000); } else setSync('warn','On this device'); }
   writing=false; if(dirty) flush();
 }
@@ -176,7 +177,7 @@ async function initSync(){
     if(!snap.metadata.fromCache) clearTimeout(t);
     if(snap.exists){
       if(!snap.metadata.hasPendingWrites){
-        const d=snap.data(); state={done:{...(d.done||{})}, asg:{...(d.asg||{})}, rev:d.rev||0};
+        const d=snap.data(); state={done:{...(d.done||{})}, asg:{...(d.asg||{})}, rev:d.rev||0, gr:{...(d.gr||{})}};
         const before=JSON.stringify(state.done)+state.rev; migrate(); applyDefaults();
         lsWrite(); render();
         if(JSON.stringify(state.done)+state.rev!==before){ dirty=true; flush(); }
@@ -220,6 +221,7 @@ function viewHome(){
       <div class="tile"><b class="num">${o.asg}/${PATHS.length}</b><span>essays</span></div>
     </div>
     <div class="bar"><i style="width:${pct(o.done,o.total)}%"></i></div>
+    <div class="grstat" id="grstat">${esc(grText)}</div>
   </div></header><main class="col">`;
   if(nx){ const b=B[nx.b.id];
     h+=`<section><a class="next" href="#${nx.p.id}"><div class="eyebrow">Up next · ${esc(nx.p.title)}</div>
@@ -325,13 +327,13 @@ document.addEventListener('input',e=>{ if(e.target.id==='q'){ lastQ=e.target.val
 document.addEventListener('click',async e=>{
   if(e.target.id==='bk-copy'){
     const m=document.getElementById('bk-msg');
-    try{ await navigator.clipboard.writeText(JSON.stringify({v:1,done:state.done,asg:state.asg})); m.textContent='Copied.'; }
+    try{ await navigator.clipboard.writeText(JSON.stringify({v:1,done:state.done,asg:state.asg,rev:state.rev,gr:state.gr})); m.textContent='Copied.'; }
     catch(err){ const ta=document.getElementById('bk-in'); ta.value=JSON.stringify({v:1,done:state.done,asg:state.asg}); ta.select(); m.textContent='Copy blocked: the backup is in the box below, selected.'; }
   }
   if(e.target.id==='bk-restore'){
     const m=document.getElementById('bk-msg');
     try{ const d=JSON.parse(document.getElementById('bk-in').value); if(!d||typeof d.done!=='object') throw 0;
-      state={done:d.done||{},asg:d.asg||{}}; scheduleSave(); render(); }
+      state={done:d.done||{},asg:d.asg||{},rev:d.rev||D.rev||0,gr:d.gr||state.gr||{}}; scheduleSave(); render(); }
     catch(err){ m.textContent='That doesn’t look like a backup.'; }
   }
 });
@@ -365,8 +367,38 @@ document.addEventListener('change', async e=>{
   }catch(err){ const m=document.getElementById('gr-msg'); if(m) m.textContent='That file doesn’t look like a Goodreads library export.'; }
   e.target.value='';
 });
+// ---------- automatic Goodreads sync (public 'read' shelf widget, run in a sandboxed frame) ----------
+const GR_SRC="https://www.goodreads.com/review/custom_widget/120052765.Antony%27s%20bookshelf:%20read?widget_id=rp&num_books=100&shelf=read";
+let grText='', grFrame=null, grTimer=null, grLast=0;
+function setGr(t){ grText=t; const el=document.getElementById('grstat'); if(el) el.textContent=t; }
+function syncGoodreads(){
+  if(grFrame || Date.now()-grLast<10*60*1000) return;
+  grLast=Date.now(); setGr('Checking Goodreads…');
+  grFrame=document.createElement('iframe');
+  grFrame.setAttribute('sandbox','allow-scripts'); grFrame.setAttribute('aria-hidden','true'); grFrame.tabIndex=-1;
+  grFrame.style.cssText='position:absolute;width:1px;height:1px;border:0;left:-9999px;top:0';
+  grFrame.srcdoc='<!DOCTYPE html><div id="gr_custom_widget_rp"></div><script>function send(){var d=document.getElementById("gr_custom_widget_rp");var out=[].map.call(d.querySelectorAll(".gr_custom_each_container_rp"),function(e){var t=e.querySelector(".gr_custom_title_rp a"),a=e.querySelector(".gr_custom_author_rp a");return [t?t.textContent.trim():"",a?a.textContent.trim():""];});parent.postMessage({grSync:out},"*");}<\/script><script src="'+GR_SRC+'" onload="send()" onerror="parent.postMessage({grSync:null},\'*\')"><\/script>';
+  document.body.appendChild(grFrame);
+  grTimer=setTimeout(()=>finishGr(null),20000);
+}
+function finishGr(list){
+  clearTimeout(grTimer); if(grFrame){ grFrame.remove(); grFrame=null; }
+  const time=new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+  if(!list || !list.length){ setGr('Couldn’t reach Goodreads. Will try again later.'); return; }
+  let added=0; state.gr ||= {};
+  list.forEach(([t,a])=>{ (keyIndex[normT(t)+'|'+lastN(a)]||[]).forEach(id=>{
+    if(state.gr[id]) return; state.gr[id]=1; if(!isDone(id)){ state.done[id]=1; added++; } }); });
+  scheduleSave(); render();
+  setGr(`Synced with Goodreads at ${time}${added?` · ${added} new book${added>1?'s':''} ticked`:''}`);
+}
+window.addEventListener('message', e=>{
+  if(!grFrame || e.source!==grFrame.contentWindow || !e.data || !('grSync' in e.data)) return;
+  const list = Array.isArray(e.data.grSync) ? e.data.grSync.filter(x=>Array.isArray(x)&&typeof x[0]==='string'&&typeof x[1]==='string').slice(0,200) : null;
+  finishGr(list);
+});
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') syncGoodreads(); });
 window.addEventListener('hashchange',()=>{ render(); window.scrollTo(0,0); });
-render(); initSync();
+render(); initSync(); syncGoodreads();
 if('serviceWorker' in navigator && location.protocol==='https:' && window.top===window.self){
   try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
 }
