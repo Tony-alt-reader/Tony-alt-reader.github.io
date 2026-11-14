@@ -237,6 +237,12 @@ function viewHome(){
   });
   h+=`<div class="foot">
     <p>Page counts marked ≈ are estimates. Links open Goodreads.</p>
+    <details data-k="gr"><summary>Import from Goodreads</summary>
+      <p>On goodreads.com, open My Books → Import and export → Export library, then pick the file here. Every book on your "read" shelf that appears in a path gets ticked.</p>
+      <label class="btn" for="gr-file" style="display:inline-block">Choose Goodreads export (.csv)</label>
+      <input id="gr-file" type="file" accept=".csv,text/csv" style="position:absolute;left:-9999px">
+      <p id="gr-msg" class="muted"></p>
+    </details>
     <details data-k="bk"><summary>Back up or restore progress</summary>
       <p>Your progress lives in this browser${ref?' and syncs to your Claude account':''}. Copy a backup now and then; paste one here to restore it.</p>
       <button class="btn" type="button" id="bk-copy">Copy backup</button> <span id="bk-msg"></span>
@@ -328,6 +334,36 @@ document.addEventListener('click',async e=>{
       state={done:d.done||{},asg:d.asg||{}}; scheduleSave(); render(); }
     catch(err){ m.textContent='That doesn’t look like a backup.'; }
   }
+});
+// ---------- Goodreads CSV import ----------
+function parseCSV(text){
+  const rows=[]; let row=[], f='', q=false;
+  for(let i=0;i<text.length;i++){ const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true; else if(c===','){ row.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=''; }
+    else f+=c; }
+  if(f||row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+const normT=s=>String(s||'').normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\(.*?\)/g,'').split(':')[0].replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+const lastN=a=>{ const w=normT(a).split(' '); return w[w.length-1]||''; };
+const keyIndex=(()=>{ const m={}; Object.entries(B).forEach(([id,b])=>{ (m[normT(b.t)+'|'+lastN(b.a)] ||= []).push(id); }); return m; })();
+document.addEventListener('change', async e=>{
+  if(e.target.id!=='gr-file') return;
+  const file=e.target.files&&e.target.files[0], msg=document.getElementById('gr-msg'); if(!file) return;
+  try{
+    const rows=parseCSV(await file.text()); const h=rows.shift().map(x=>x.trim());
+    const ci=n=>h.indexOf(n), iId=ci('Book Id'), iT=ci('Title'), iA=ci('Author'), iS=ci('Exclusive Shelf');
+    if(iT<0||iS<0) throw new Error('not a Goodreads export');
+    let ticked=0, already=0, readCount=0; const seen=new Set();
+    rows.forEach(r=>{ if(r[iS]!=='read') return; readCount++;
+      const ids=new Set(); if(B[r[iId]]) ids.add(r[iId]); (keyIndex[normT(r[iT])+'|'+lastN(r[iA])]||[]).forEach(x=>ids.add(x));
+      ids.forEach(id=>{ if(seen.has(id)) return; seen.add(id); if(isDone(id)) already++; else { state.done[id]=1; ticked++; } }); });
+    scheduleSave(); render();
+    const m=document.getElementById('gr-msg'); if(m) m.textContent=`Read ${readCount} books from your export. Ticked ${ticked} new book${ticked===1?'':'s'}; ${already} were already ticked.`;
+  }catch(err){ const m=document.getElementById('gr-msg'); if(m) m.textContent='That file doesn’t look like a Goodreads library export.'; }
+  e.target.value='';
 });
 window.addEventListener('hashchange',()=>{ render(); window.scrollTo(0,0); });
 render(); initSync();
