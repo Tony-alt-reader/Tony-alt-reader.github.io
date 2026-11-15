@@ -208,13 +208,13 @@ const fmt = n => n.toLocaleString('en-CA');
 const isDone = id => !!state.done[id];
 const pp = bk => `${bk.e?'≈ ':''}${fmt(bk.p)} pp.`;
 function stats(p){
-  const n=p.core.length, d=p.core.filter(b=>isDone(b.id)).length;
-  const pages=p.core.reduce((s,b)=>s+B[b.id].p,0), left=p.core.filter(b=>!isDone(b.id)).reduce((s,b)=>s+B[b.id].p,0);
+  const n=p.rungs.length, d=p.rungs.filter(b=>isDone(b.id)).length;
+  const pages=p.rungs.reduce((s,b)=>s+B[b.id].p,0), left=p.rungs.filter(b=>!isDone(b.id)).reduce((s,b)=>s+B[b.id].p,0);
   const opt=p.rungs.filter(b=>b.o);
   return {n,d,pages,left,asg:!!state.asg[p.id],on:opt.length,od:opt.filter(b=>isDone(b.id)).length};
 }
 function overall(){
-  const ids=new Set(); PATHS.forEach(p=>p.core.forEach(b=>ids.add(b.id)));
+  const ids=new Set(); PATHS.forEach(p=>p.rungs.forEach(b=>ids.add(b.id)));
   let done=0,left=0; ids.forEach(id=>{ if(isDone(id)) done++; else left+=B[id].p; });
   return {total:ids.size, done, left, asg:PATHS.filter(p=>state.asg[p.id]).length};
 }
@@ -234,7 +234,7 @@ function plan(){
   const terms=[]; let cur={t, cap:pace()*monthsLeft, used:0, paths:[]}; terms.push(cur);
   const done=[], termByPath={};
   PATHS.forEach(p=>{
-    const rem=p.core.filter(b=>!isDone(b.id)).reduce((a,b)=>a+B[b.id].p,0);
+    const rem=p.rungs.filter(b=>!isDone(b.id)).reduce((a,b)=>a+B[b.id].p,0);
     if(!rem){ done.push(p); return; }
     if(cur.paths.length && cur.used+rem>cur.cap*1.1){ t=nextTerm(t); cur={t, cap:pace()*4, used:0, paths:[]}; terms.push(cur); }
     cur.paths.push(p); cur.used+=rem; termByPath[p.id]=cur;
@@ -243,7 +243,7 @@ function plan(){
   return {terms, done, termByPath};
 }
 function pinsList(){ if(Array.isArray(state.pins)) return state.pins.filter(id=>byId[id]); const pl=plan(); return pl.terms.length?pl.terms[0].paths.map(p=>p.id):[]; }
-function current(p){ return p.core.find(b=>isNow(b.id)) || p.core.find(b=>!isDone(b.id)) || null; }
+function current(p){ return p.rungs.find(b=>isNow(b.id)) || p.rungs.find(b=>!isDone(b.id)) || null; }
 const topbar = () => `<div class="topbar"><a class="brand" href="#">${ICON}<span>Reading Paths</span></a>
   <div class="sync" aria-live="polite"><span class="dot ${syncKind}" id="syncdot"></span><span id="synctext">${esc(syncText)}</span></div></div>`;
 
@@ -277,7 +277,7 @@ function viewHome(){
     <input id="q" class="search" type="search" placeholder="Try Joyce, memory, Kant…" autocomplete="off">
     <div id="hits"></div></section>`;
   const pl=plan(), last=pl.terms[pl.terms.length-1];
-  h+=`<p class="muted small" style="margin-top:24px">At about ${fmt(pace())} pages a month, the core reading takes ${pl.terms.length} semesters and ends with ${esc(last.label)}. Semesters shift as you read; change your pace at the bottom of the page.</p>`;
+  h+=`<p class="muted small" style="margin-top:24px">At about ${fmt(pace())} pages a month, everything left, optional books included, takes ${pl.terms.length} semesters and ends with ${esc(last.label)}. Semesters shift as you read; change your pace at the bottom of the page.</p>`;
   const row=p=>{ const s=stats(p), full=s.d===s.n, pinned=pins.includes(p.id);
     h+=`<a class="pl ${full?'full':''}" href="#${p.id}"><h3>${esc(p.title)}${pinned?' <span class="chip pin">On desk</span>':''}</h3>
       <span class="c num">${s.d}/${s.n}</span>
@@ -311,7 +311,7 @@ function viewHome(){
   return h;
 }
 function rungHTML(b,i,p,nowId){
-  const optional=!!b.o, bk=B[b.id], d=isDone(b.id), term=b.id===p.terminal, now=!optional&&b.id===nowId;
+  const optional=!!b.o, bk=B[b.id], d=isDone(b.id), term=b.id===p.terminal, now=b.id===nowId;
   const others=(appears[b.id]||[]).filter(x=>x!==p.id);
   return `<div class="rung ${d?'done':''} ${now?'now':''} ${optional?'opt':''}">
     <div class="n">${d?'✓':String(i+1).padStart(2,'0')}</div>
@@ -337,7 +337,7 @@ function viewPath(p){
     <p class="q">${esc(p.question)}</p>
     <div class="bar"><i style="width:${pct(s.d,s.n)}%"></i></div>
     <button type="button" class="pinbtn" data-pin="${esc(p.id)}">${pinned?'On your desk · Unpin':'Pin to your desk'}</button>
-    <div class="stats"><span class="num">${s.d}/${s.n} core read</span>${s.on?`<span class="num">${s.od}/${s.on} optional</span>`:''}<span class="num">${fmt(s.left)} of ${fmt(s.pages)} pp. to go</span>${s.asg?'<span>Essay written</span>':''}</div>
+    <div class="stats"><span class="num">${s.d}/${s.n} read</span><span class="num">${fmt(s.left)} of ${fmt(s.pages)} pp. to go</span>${s.asg?'<span>Essay written</span>':''}</div>
   </div></header><main class="col">
   <section><p class="why">${esc(p.why)}</p></section>
   <section><h2 style="font-size:22px">The path</h2>`;
