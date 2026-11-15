@@ -71,7 +71,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0}
 main{padding-bottom:calc(env(safe-area-inset-bottom) + 64px)}
 section{margin-top:var(--space-6)}
 .grstat{margin-top:var(--space-3);font-size:12px;color:var(--on-deep-muted);min-height:16px}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);margin-top:var(--space-4)}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-2);margin-top:var(--space-4)}
 .tile{background:rgba(255,255,255,.08);border-radius:var(--radius-md);padding:var(--space-3)}
 .tile b{display:block;font:600 22px/28px var(--display);color:var(--on-deep)}
 .tile span{font-size:12px;line-height:16px;color:var(--on-deep-muted)}
@@ -218,7 +218,6 @@ function viewHome(){
     <div class="tiles">
       <div class="tile"><b class="num">${o.done}/${o.total}</b><span>books read</span></div>
       <div class="tile"><b class="num">${fmt(o.left)}</b><span>pages to go</span></div>
-      <div class="tile"><b class="num">${o.asg}/${PATHS.length}</b><span>essays</span></div>
     </div>
     <div class="bar"><i style="width:${pct(o.done,o.total)}%"></i></div>
     <div class="grstat" id="grstat">${esc(grText)}</div>
@@ -234,7 +233,7 @@ function viewHome(){
     if(p.group!==g){ g=p.group; h+=`<h2 class="group">${esc(g)}</h2>`; }
     const s=stats(p), full=s.d===s.n;
     h+=`<a class="pl ${full?'full':''}" href="#${p.id}"><h3>${esc(p.title)}</h3>
-      <span class="c num">${s.d}/${s.n}${s.asg?' · essay':''}</span>
+      <span class="c num">${s.d}/${s.n}</span>
       <span class="q">${esc(p.question)}</span><div class="bar"><i style="width:${pct(s.d,s.n)}%"></i></div></a>`;
   });
   h+=`<div class="foot">
