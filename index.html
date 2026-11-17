@@ -12,136 +12,174 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/libre-franklin-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/libre-franklin-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Tokens from the Reading Paths design system. Layout: one 680px reading column; a violet-deep band heads each view; rungs are hairline rows with a numbered gutter. */
+@font-face{font-family:"Libre Franklin";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/libre-franklin-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Libre Franklin";font-weight:400;font-style:italic;font-display:swap;src:url(fonts/libre-franklin-latin-400-italic.woff2) format("woff2")}
+@font-face{font-family:"Libre Franklin";font-weight:600;font-style:normal;font-display:swap;src:url(fonts/libre-franklin-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Libre Franklin";font-weight:800;font-style:normal;font-display:swap;src:url(fonts/libre-franklin-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-style:normal;font-display:swap;src:url(fonts/barlow-condensed-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2")}
 :root{
-  --surface:#f6f4fa; --surface-raised:#ffffff; --ink:#1d1828; --ink-muted:#5e5870; --line:#ddd7e8;
-  --violet:#6b3fd4; --violet-soft:#ece4ff; --violet-deep:#2c1670; --read:#2e7650; --spark:#a3326b; --on-deep:#ffffff;
-  --on-deep-muted:#cbbcf5;
-  --display:"Newsreader", Georgia, "Times New Roman", serif;
-  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px;
-  --radius-sm:6px; --radius-md:12px; --radius-pill:999px;
+  --ground:#eef0f4; --slip:#ffffff; --ink:#1a1724; --ink-2:#555066; --rule:#c6cddd; --rule-2:#e3e7ef; --red:#c13a33;
+  --shell:#2c1670; --on-shell:#ffffff; --on-shell-2:#cfc3f6; --shell-rule:rgba(255,255,255,.22);
+  --stamp:#5a2fd4; --stamp-soft:#e9e2ff; --spark:#a3326b;
+  --text:"Libre Franklin", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cond:"Barlow Condensed", "Arial Narrow", sans-serif;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --surface:#13111a; --surface-raised:#1c1926; --ink:#ece8f5; --ink-muted:#a39cb6; --line:#2f2a3d;
-    --violet:#b39dff; --violet-soft:#2a2145; --read:#76c99a; --spark:#f08fbf; color-scheme: dark;
+    --ground:#131019; --slip:#1c1825; --ink:#ece8f4; --ink-2:#a9a2bc; --rule:#3a3f57; --rule-2:#2a2a3b; --red:#e3685f;
+    --shell:#22105a; --stamp:#b9a4ff; --stamp-soft:#2d2350; --spark:#f08fbf; color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --surface:#13111a; --surface-raised:#1c1926; --ink:#ece8f5; --ink-muted:#a39cb6; --line:#2f2a3d;
-  --violet:#b39dff; --violet-soft:#2a2145; --read:#76c99a; --spark:#f08fbf; color-scheme: dark;
+  --ground:#131019; --slip:#1c1825; --ink:#ece8f4; --ink-2:#a9a2bc; --rule:#3a3f57; --rule-2:#2a2a3b; --red:#e3685f;
+  --shell:#22105a; --stamp:#b9a4ff; --stamp-soft:#2d2350; --spark:#f08fbf; color-scheme: dark;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--surface);color:var(--ink);font:16px/1.5 var(--sans);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-a{color:var(--violet)}
+html{scrollbar-color:var(--rule) var(--ground)}
+body{background:var(--ground);color:var(--ink);font:16px/1.5 var(--text);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;caret-color:var(--stamp);font-variant-numeric:tabular-nums}
+::selection{background:var(--stamp-soft);color:var(--ink)}
+a{color:var(--stamp);text-underline-offset:3px;text-decoration-thickness:1px}
 button,input,textarea{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
-.col{max-width:680px;margin:0 auto;padding-left:max(var(--space-4),env(safe-area-inset-left));padding-right:max(var(--space-4),env(safe-area-inset-right))}
-h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0}
-.num{font-variant-numeric:tabular-nums}
-.eyebrow{font-size:12px;line-height:16px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
-.muted{color:var(--ink-muted)}
+:focus-visible{outline:2px solid var(--stamp);outline-offset:2px;border-radius:2px}
+.col{max-width:680px;margin:0 auto;padding-left:max(var(--s4),env(safe-area-inset-left));padding-right:max(var(--s4),env(safe-area-inset-right))}
+h1,h2,h3{font-weight:800;text-wrap:balance;margin:0;letter-spacing:-.01em}
+.muted{color:var(--ink-2)}
+.small{font-size:14px;line-height:20px}
 
-/* band */
-.band{background:var(--violet-deep);color:var(--on-deep);padding-top:calc(env(safe-area-inset-top) + var(--space-4));padding-bottom:var(--space-6)}
-.band .eyebrow{color:var(--on-deep-muted)}
-.band a{color:var(--on-deep)}
-.topbar{display:flex;align-items:center;gap:var(--space-3);min-height:32px}
-.brand{display:flex;align-items:center;gap:var(--space-2);font:600 18px/1 var(--display);text-decoration:none;color:var(--on-deep)}
+/* shell */
+.band{background:var(--shell);color:var(--on-shell);padding-top:calc(env(safe-area-inset-top) + var(--s3));padding-bottom:var(--s6)}
+.band a{color:var(--on-shell)}
+.band :focus-visible{outline-color:var(--on-shell)}
+.band ::selection{background:var(--on-shell);color:var(--shell)}
+.topbar{display:flex;align-items:center;gap:var(--s3);min-height:44px}
+.brand{display:flex;align-items:center;gap:var(--s2);font:800 17px/1 var(--text);text-decoration:none}
 .brand svg{width:26px;height:26px;border-radius:7px}
-.sync{margin-left:auto;font-size:12px;color:var(--on-deep-muted);display:flex;align-items:center;gap:6px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--on-deep-muted)}
-.dot.ok{background:#76c99a}.dot.warn{background:#f08fbf}
-.band h1{font-size:32px;line-height:36px;margin-top:var(--space-6)}
-.band .q{font:italic 400 19px/27px var(--display);margin:var(--space-2) 0 0;color:var(--on-deep)}
-.band .bar{background:rgba(255,255,255,.18);margin-top:var(--space-4)}
-.band .bar>i{background:#b39dff}
-.band .stats{display:flex;flex-wrap:wrap;gap:var(--space-1) var(--space-4);margin-top:var(--space-3);font-size:14px;color:var(--on-deep-muted)}
-.back{display:inline-block;margin-top:var(--space-4);font-size:14px;text-decoration:none}
+.sync{margin-left:auto;font-size:13px;color:var(--on-shell-2);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--on-shell-2)}
+.dot.ok{background:#8fe0b2}.dot.warn{background:#ffb3d4}
+.band h1{font-size:34px;line-height:38px;margin-top:var(--s5)}
+.band .lede{text-wrap:pretty;margin:var(--s2) 0 0;font-size:16px;line-height:23px;color:var(--on-shell);max-width:40ch}
+.band .lede + .lede{color:var(--on-shell-2);margin-top:var(--s1)}
+.band .q{font-style:italic;font-size:18px;line-height:26px;margin:var(--s3) 0 0;max-width:46ch}
+.band .meta{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s4);margin-top:var(--s3);font-size:14px;line-height:20px;color:var(--on-shell-2)}
+.grstat{margin-top:var(--s3);font-size:13px;line-height:18px;color:var(--on-shell-2);min-height:18px}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:15px;text-decoration:none;color:var(--on-shell-2)!important}
+.back svg,.pager svg{width:14px;height:14px;flex:none}
+.pinbtn{margin-top:var(--s4);min-height:40px;background:transparent;color:var(--on-shell);border:1px solid var(--shell-rule);border-radius:4px;padding:0 var(--s4);font-size:15px;font-weight:600;cursor:pointer}
+.pinbtn[aria-pressed="true"]{background:var(--on-shell);color:var(--shell);border-color:var(--on-shell)}
+.pinbtn:active{transform:translateY(1px)}
 
-.bar{height:6px;background:var(--line);border-radius:var(--radius-pill);overflow:hidden}
-.bar>i{display:block;height:100%;background:var(--violet);border-radius:var(--radius-pill)}
 main{padding-bottom:calc(env(safe-area-inset-bottom) + 64px)}
-section{margin-top:var(--space-6)}
+section{margin-top:var(--s8)}
 .sec{font-size:22px;line-height:28px}
-.small{font-size:13px;line-height:18px}
-.desk{display:grid;gap:var(--space-3);margin-top:var(--space-3)}
-.card{display:flex;gap:var(--space-4);background:var(--violet-soft);border-radius:var(--radius-md);padding:var(--space-4);text-decoration:none;color:var(--ink)}
-.card .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.card .eyebrow{color:var(--violet)}
-.card .t{font:600 19px/25px var(--display)}
-.card .bar{margin-top:auto;background:var(--surface-raised)}
-.mini{display:flex;gap:var(--space-3);align-items:center;padding:var(--space-3) 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
-.chip.nowr{background:var(--read);border-color:var(--read);color:var(--surface)}
-.chip.pin{vertical-align:middle;font-family:var(--sans);font-weight:500}
-.mvn{display:block;font:600 12px/16px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--violet);margin-bottom:2px}
-.mvb{margin:var(--space-2) 0 0;font-size:14px;line-height:20px;color:var(--ink-muted)}
-.pinbtn{margin-top:var(--space-4);background:rgba(255,255,255,.12);color:var(--on-deep);border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-pill);padding:6px 14px;font-size:14px;cursor:pointer}
-.grstat{margin-top:var(--space-3);font-size:12px;color:var(--on-deep-muted);min-height:16px}
-.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-2);margin-top:var(--space-4)}
-.tile{background:rgba(255,255,255,.08);border-radius:var(--radius-md);padding:var(--space-3)}
-.tile b{display:block;font:600 22px/28px var(--display);color:var(--on-deep)}
-.tile span{font-size:12px;line-height:16px;color:var(--on-deep-muted)}
+.ruled{padding-bottom:var(--s2);border-bottom:3px double var(--red)}
+.note{margin:var(--s2) 0 0;font-size:14px;line-height:20px;color:var(--ink-2)}
 
-.next{display:block;background:var(--violet-soft);border-radius:var(--radius-md);padding:var(--space-4);text-decoration:none;color:var(--ink);}
-.next .t{font:600 19px/25px var(--display);margin-top:var(--space-1)}
-.next .eyebrow{color:var(--violet)}
-.search{width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface-raised);margin-top:var(--space-2)}
-.hit{padding:var(--space-3) 0;border-bottom:1px solid var(--line);font-size:14px}
-.hit a{text-decoration:none;font-weight:500}
+/* slip */
+.slip{background:var(--slip);border:1px solid var(--rule);border-radius:3px;margin-top:var(--s3);box-shadow:0 1px 2px rgba(26,23,36,.06),0 6px 16px -10px rgba(26,23,36,.18)}
+.drow{display:grid;grid-template-columns:1fr auto;gap:2px var(--s3);padding:var(--s4);border-top:1px solid var(--rule-2);text-decoration:none;color:var(--ink)}
+.drow:first-child{border-top:0}
+.drow:active{background:var(--stamp-soft)}
+.drow .pt{font-size:14px;line-height:20px;font-weight:600;color:var(--ink-2)}
+.drow .bt{grid-column:1/-1;font-size:19px;line-height:25px;font-weight:800;letter-spacing:-.01em}
+.drow .ba{grid-column:1/-1;font-size:14px;line-height:20px;color:var(--ink-2)}
+.drow .strip{grid-column:1/-1;margin-top:var(--s3)}
+.drow .cnt{font-size:14px;line-height:20px;color:var(--ink-2);align-self:start}
 
-.group{margin-top:var(--space-8);font-size:22px;line-height:28px;padding-bottom:var(--space-2);border-bottom:1px solid var(--ink)}
-.pl{display:grid;grid-template-columns:1fr auto;gap:var(--space-1) var(--space-3);align-items:baseline;padding:var(--space-4) 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+/* stamp strip */
+.strip{display:flex;flex-wrap:wrap;gap:3px}
+.strip i{width:12px;height:12px;border:1px solid var(--rule);border-radius:1px;background:var(--slip)}
+.strip i.o{border-style:dotted}
+.strip i.r{background:var(--stamp);border-color:var(--stamp)}
+.strip i.n{border:2px solid var(--stamp)}
+
+/* labels */
+.lab{display:inline-block;font:700 13px/18px var(--cond);text-transform:uppercase;letter-spacing:.04em;padding:0 6px;border:1px solid var(--rule);border-radius:2px;color:var(--ink-2);white-space:nowrap}
+.lab.next{border-color:var(--stamp);color:var(--stamp)}
+.lab.out{background:var(--stamp);border-color:var(--stamp);color:var(--slip)}
+.lab.final{border-color:var(--red);color:var(--red)}
+.lab.wild{border-color:var(--spark);color:var(--spark)}
+.lab.sel{border-style:dashed}
+.lab.desk{border-color:var(--stamp);color:var(--stamp);vertical-align:2px;margin-left:6px}
+
+/* search */
+.field-label{display:block;font-size:15px;font-weight:600}
+.search{width:100%;min-height:48px;padding:0 var(--s4);border:1px solid var(--rule);border-radius:3px;background:var(--slip);margin-top:var(--s2);font-size:16px}
+.search::placeholder{color:var(--ink-2)}
+.search:focus{border-color:var(--stamp);outline:none;box-shadow:0 0 0 3px var(--stamp-soft)}
+.hit{padding:var(--s3) 0;border-bottom:1px solid var(--rule-2);font-size:15px;line-height:21px}
+.hit a{text-decoration:none;font-weight:600}
+
+/* term list */
+.term{margin-top:var(--s10)}
+.term h2{font-size:24px;line-height:30px}
+.term .note{margin-top:var(--s2)}
+.pl{display:grid;grid-template-columns:1fr auto;gap:2px var(--s3);align-items:baseline;padding:var(--s4) 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
 .pl h3{font-size:18px;line-height:24px}
-.pl .c{font-size:14px;color:var(--ink-muted)}
-.pl .q{grid-column:1/-1;font-size:14px;line-height:20px;color:var(--ink-muted)}
-.pl .bar{grid-column:1/-1;margin-top:var(--space-1)}
-.pl.full .c{color:var(--read);font-weight:600}
+.pl .c{font-size:14px;color:var(--ink-2)}
+.pl .q{grid-column:1/-1;font-size:15px;line-height:21px;color:var(--ink-2)}
+.pl .strip{grid-column:1/-1;margin-top:var(--s2)}
+.pl:active h3{color:var(--stamp)}
 
-.why{font:400 17px/27px var(--display);margin:0}
-.rung{display:grid;grid-template-columns:28px 1fr;gap:0 var(--space-3);padding:var(--space-4) 0;border-bottom:1px solid var(--line)}
-.rung .n{font:600 14px/24px var(--sans);color:var(--ink-muted);font-variant-numeric:tabular-nums}
-.rung.done .n{color:var(--read)}
-.rung.now .n{color:var(--violet)}
-.rung .title{font:600 18px/24px var(--display)}
-.rung .by{font-size:14px;color:var(--ink-muted)}
-.rung p{margin:var(--space-2) 0 0;font-size:15px;line-height:23px}
-.chips{display:flex;flex-wrap:wrap;gap:var(--space-1) var(--space-2);align-items:center;margin-top:var(--space-2);font-size:13px;color:var(--ink-muted)}
-.chip{display:inline-block;padding:1px var(--space-2);border-radius:var(--radius-pill);border:1px solid var(--line);font-size:12px;line-height:18px;color:var(--ink-muted)}
-.chip.final{border-color:var(--violet);color:var(--violet)}
-.chip.now{background:var(--violet);border-color:var(--violet);color:var(--surface)}
-.chip.wild{border-color:var(--spark);color:var(--spark)}
-.chip.sel{border-style:dashed}
-.chip.optc{background:var(--line);border-color:var(--line);color:var(--ink-muted)}
-.rung.opt .title{font-weight:400}
-.rung.opt p{color:var(--ink-muted)}
-.check{display:inline-flex;align-items:center;gap:var(--space-2);cursor:pointer;min-height:44px;margin-top:var(--space-1);font-size:14px}
-.check input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border:1.5px solid var(--ink-muted);border-radius:var(--radius-sm);margin:0;display:grid;place-content:center;background:var(--surface-raised)}
-.check input:checked{background:var(--read);border-color:var(--read)}
-.check input:checked::after{content:"";width:6px;height:11px;border:solid var(--surface);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
-.rung.done .check span{color:var(--read);font-weight:600}
+/* path page */
+.why{font-size:17px;line-height:28px;margin:0;max-width:66ch}
+.rung{display:grid;grid-template-columns:24px 1fr;gap:0 var(--s3);padding:var(--s4) 0;border-bottom:1px solid var(--rule)}
+.rung .n{font:700 16px/24px var(--cond);color:var(--ink-2)}
+.rung.now .n{color:var(--stamp)}
+.rung .title{font-size:18px;line-height:24px;font-weight:800;letter-spacing:-.01em}
+.rung .by{font-size:14px;line-height:20px;color:var(--ink-2)}
+.rung p{margin:var(--s2) 0 0;font-size:15px;line-height:23px}
+.rung.opt .title{font-weight:600}
+.rung.opt p{color:var(--ink-2)}
+.labs{display:flex;flex-wrap:wrap;gap:6px var(--s2);align-items:center;margin-top:var(--s3);font-size:14px;color:var(--ink-2)}
+.labs a{font-size:14px}
+.act{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);margin-top:var(--s1)}
+.date{flex:none;min-width:100px;min-height:40px;border:1px dashed var(--rule);border-radius:2px;display:grid;place-items:center}
+.rung.now .date{border:1.5px solid var(--stamp)}
+.stamp{--r:-2deg;display:inline-block;transform:rotate(var(--r));font:700 15px/1 var(--cond);text-transform:uppercase;letter-spacing:.05em;color:var(--stamp);border:2px solid var(--stamp);border-radius:3px;padding:5px 6px 4px;white-space:nowrap;opacity:.9;mix-blend-mode:multiply}
+:root[data-theme="dark"] .stamp{mix-blend-mode:normal}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .stamp{mix-blend-mode:normal} }
+.rung.done .date{border-color:transparent}
+.check{display:inline-flex;align-items:center;gap:var(--s2);cursor:pointer;min-height:44px;font-size:15px}
+.check input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border:1.5px solid var(--ink-2);border-radius:3px;margin:0;display:grid;place-content:center;background:var(--slip);cursor:pointer}
+.check input:checked{background:var(--stamp);border-color:var(--stamp)}
+.check input:checked::after{content:"";width:6px;height:11px;border:solid var(--slip);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.rung.done .check span{color:var(--stamp);font-weight:600}
 
-.panel{background:var(--violet-soft);border-radius:var(--radius-md);padding:var(--space-4)}
-.panel p{margin:var(--space-2) 0 0}
-.panel .eyebrow{color:var(--violet)}
-details{border-top:1px solid var(--line)}
-summary{cursor:pointer;font-weight:600;padding:var(--space-3) 0;min-height:44px;display:flex;align-items:center;list-style:none}
+.slip.panel{padding:var(--s4) var(--s4) var(--s2)}
+.panel h3{font-size:17px;line-height:23px}
+.panel h3 + p{margin:var(--s1) 0 0}
+.panel p + h3{margin-top:var(--s5)}
+.panel p{font-size:15px;line-height:23px}
+details{border-top:1px solid var(--rule)}
+summary{cursor:pointer;font-weight:600;padding:var(--s3) 0;min-height:48px;display:flex;align-items:center;list-style:none}
 summary::-webkit-details-marker{display:none}
-summary::after{content:"+";margin-left:auto;font-weight:400;color:var(--violet);font-size:20px}
-details[open] summary::after{content:"–"}
-.pager{display:flex;justify-content:space-between;gap:var(--space-4);font-size:14px}
-.pager a{text-decoration:none}
-.foot{margin-top:40px;font-size:13px;color:var(--ink-muted)}
-.btn{background:var(--surface-raised);border:1px solid var(--line);border-radius:var(--radius-sm);padding:var(--space-2) var(--space-3);cursor:pointer;font-size:14px}
-textarea{width:100%;min-height:90px;margin-top:var(--space-2);border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface-raised);padding:var(--space-2);font-size:12px}
-@media (prefers-reduced-motion:no-preference){.bar>i{transition:width .3s}}
+summary::after{content:"";margin-left:auto;width:9px;height:9px;border:solid var(--stamp);border-width:0 2px 2px 0;transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+details[open] summary::after{transform:translateY(2px) rotate(-135deg)}
+.src{padding:0 0 var(--s3)}
+.pager{display:flex;justify-content:space-between;gap:var(--s4);font-size:15px;line-height:21px}
+.pager a{display:inline-flex;gap:6px;align-items:baseline;text-decoration:none;max-width:48%}
+.pager a.nx{text-align:right;margin-left:auto}
+.foot{margin-top:var(--s10);font-size:14px;line-height:20px;color:var(--ink-2)}
+.foot p{max-width:62ch}
+.btn{min-height:40px;background:var(--slip);border:1px solid var(--rule);border-radius:3px;padding:0 var(--s3);cursor:pointer;font-size:15px;font-weight:600;color:var(--ink)}
+.btn:hover{border-color:var(--stamp)}
+.btn:active{transform:translateY(1px)}
+label.btn{display:inline-flex;align-items:center}
+textarea{width:100%;min-height:90px;margin-top:var(--s2);border:1px solid var(--rule);border-radius:3px;background:var(--slip);padding:var(--s2);font-size:13px}
+@media (hover:hover){ .pl:hover h3,.drow:hover .bt{color:var(--stamp)} }
+@media (prefers-reduced-motion:no-preference){
+  .stamp.fresh{animation:stampin .32s cubic-bezier(.16,1,.3,1) both}
+  @keyframes stampin{from{transform:rotate(var(--r)) scale(1.7);opacity:0;filter:blur(3px)}to{transform:rotate(var(--r)) scale(1);opacity:.9;filter:none}}
+  .strip i{transition:background-color .2s}
+}
 </style>
 </head>
 <body>
@@ -157,13 +195,13 @@ PATHS.forEach(p=>p.rungs.forEach(b=>{(appears[b.id] ||= []).push(p.id)}));
 const ICON = '<svg viewBox="0 0 1024 1024" aria-hidden="true"><rect width="1024" height="1024" fill="#2c1670"/><circle cx="820" cy="190" r="300" fill="#3a1f8f"/><path d="M230 840 C 120 640, 560 690, 500 500 S 720 300, 780 230" fill="none" stroke="#b39dff" stroke-width="64" stroke-linecap="round" stroke-dasharray="2 112" stroke-dashoffset="-100"/><circle cx="780" cy="230" r="70" fill="#fff"/><circle cx="230" cy="840" r="46" fill="#f08fbf"/></svg>';
 
 // ---------- progress ----------
-let state = {done:{}, asg:{}, rev:0, gr:{}, pins:null, pace:null};
+let state = {done:{}, asg:{}, rev:0, gr:{}, pins:null, pace:null, dt:{}};
 const LS_KEY = 'reading-paths-progress-v1';
 function lsRead(){ try{ const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }catch(e){ return null; } }
 function lsWrite(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
 function migrate(){ let changed=false; if((state.rev||0)<(D.rev||0)){ (D.unread||[]).forEach(id=>{ if(state.done[id]){ state.done[id]=0; changed=true; } }); state.rev=D.rev; changed=true; } return changed; }
 function applyDefaults(){ Object.entries(B).forEach(([id,b])=>{ if(b.r && !(id in state.done)) state.done[id]=1; }); }
-const local = lsRead(); if(local && local.done) state = {done:local.done||{}, asg:local.asg||{}, rev:local.rev||0, gr:local.gr||{}, pins:local.pins||null, pace:local.pace||null};
+const local = lsRead(); if(local && local.done) state = {done:local.done||{}, asg:local.asg||{}, rev:local.rev||0, gr:local.gr||{}, pins:local.pins||null, pace:local.pace||null, dt:local.dt||{}};
 migrate(); applyDefaults(); lsWrite();
 
 let syncKind='', syncText='On this device';
@@ -173,7 +211,7 @@ function scheduleSave(){ lsWrite(); if(!ref) return; dirty=true; clearTimeout(ti
 async function flush(){
   if(!ref||writing||!dirty) return;
   writing=true; dirty=false; setSync('','Saving…');
-  try{ await ref.set({done:state.done, asg:state.asg, rev:state.rev||0, gr:state.gr||{}, pins:state.pins||null, pace:state.pace||null, updated:new Date().toISOString()}); setSync('ok','Synced'); }
+  try{ await ref.set({done:state.done, asg:state.asg, rev:state.rev||0, gr:state.gr||{}, pins:state.pins||null, pace:state.pace||null, dt:state.dt||{}, updated:new Date().toISOString()}); setSync('ok','Synced'); }
   catch(e){ if(e&&e.code==='unavailable'){ dirty=true; setTimeout(flush,1500+Math.random()*1000); } else setSync('warn','On this device'); }
   writing=false; if(dirty) flush();
 }
@@ -191,7 +229,7 @@ async function initSync(){
     if(!snap.metadata.fromCache) clearTimeout(t);
     if(snap.exists){
       if(!snap.metadata.hasPendingWrites){
-        const d=snap.data(); state={done:{...(d.done||{})}, asg:{...(d.asg||{})}, rev:d.rev||0, gr:{...(d.gr||{})}, pins:d.pins||state.pins||null, pace:d.pace||state.pace||null};
+        const d=snap.data(); state={done:{...(d.done||{})}, asg:{...(d.asg||{})}, rev:d.rev||0, gr:{...(d.gr||{})}, pins:d.pins||state.pins||null, pace:d.pace||state.pace||null, dt:{...(state.dt||{}),...(d.dt||{})}};
         const before=JSON.stringify(state.done)+state.rev; migrate(); applyDefaults();
         lsWrite(); render();
         if(JSON.stringify(state.done)+state.rev!==before){ dirty=true; flush(); }
@@ -220,6 +258,15 @@ function overall(){
 }
 function nextUp(){ for(const p of PATHS){ const b=p.core.find(b=>!isDone(b.id)); if(b) return {p,b}; } return null; }
 const pct=(a,b)=>b?Math.round(100*a/b):0;
+const MS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const today=()=>{ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+function stampText(id){ const v=state.dt&&state.dt[id]; const m=v&&/^(\d{4})-(\d{2})-(\d{2})/.exec(v); return m?`${+m[3]} ${MS[+m[2]-1]} ${m[1].slice(2)}`:'Read'; }
+function tilt(id){ let h=0; for(const c of String(id)) h=(h*31+c.charCodeAt(0))|0; return [-3,-2.2,-1.4,1.2,2,2.8][Math.abs(h)%6]+'deg'; }
+let freshStamp=null;
+function setRead(id,on,date){ state.done[id]=on?1:0; state.dt ||= {}; if(on){ if(date) state.dt[id]=date; } else delete state.dt[id]; }
+const strip=(p,nowId)=>`<div class="strip" aria-hidden="true">${p.rungs.map(b=>`<i class="${isDone(b.id)?'r':b.id===nowId?'n':''}${b.o&&!isDone(b.id)?' o':''}"></i>`).join('')}</div>`;
+const CHEV_L='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHEV_R='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const NOW_KEY='reading-paths-now-v1';
 let readingNow = (()=>{ try{ return JSON.parse(localStorage.getItem(NOW_KEY)||'[]'); }catch(e){ return []; } })();
 const isNow = id => readingNow.includes(id) && !isDone(id);
@@ -251,109 +298,108 @@ const topbar = () => `<div class="topbar"><a class="brand" href="#">${ICON}<span
 let lastQ='';
 function viewHome(){
   const o=overall();
+  const pl=plan(), cur=pl.terms[0];
+  const termEnd=cur?MON[cur.t.s+3]:'';
   let h=`<header class="band"><div class="col">${topbar()}
-    <h1>Nine movements, fifty-four paths</h1>
-    <div class="tiles">
-      <div class="tile"><b class="num">${o.done}/${o.total}</b><span>books read</span></div>
-      <div class="tile"><b class="num">${fmt(o.left)}</b><span>pages to go</span></div>
-    </div>
-    <div class="bar"><i style="width:${pct(o.done,o.total)}%"></i></div>
+    <h1>${cur?esc(cur.label):'Every path read'}</h1>
+    ${cur?`<p class="lede">Through ${termEnd}: ${cur.paths.length} path${cur.paths.length>1?'s':''}, about ${fmt(Math.round(cur.used/100)*100)} pages left this term.</p>`:''}
+    <p class="lede">${fmt(o.done)} of ${fmt(o.total)} books read. ${fmt(o.left)} pages to go in all.</p>
     <div class="grstat" id="grstat">${esc(grText)}</div>
   </div></header><main class="col">`;
   const pins=pinsList();
-  h+=`<section><h2 class="sec">On your desk</h2><p class="muted small">Paths you're reading in parallel. Pin more from any path's page.</p><div class="desk">`;
-  pins.forEach(pid=>{ const p=byId[pid], s=stats(p), cb=current(p);
-    h+=`<a class="card" href="#${p.id}"><div class="ct">
-      <div class="eyebrow">${esc(p.title)}</div>
-      ${cb?`<div class="t">${esc(B[cb.id].t)}</div><div class="muted small">${esc(B[cb.id].a)}, ${pp(B[cb.id])}</div>
-        <div class="chips">${isNow(cb.id)?'<span class="chip nowr">Reading now</span>':'<span class="chip now">Up next</span>'}</div>`:'<div class="t">Path complete</div>'}
-      <div class="bar"><i style="width:${pct(s.d,s.n)}%"></i></div><div class="muted small num">${s.d}/${s.n} read</div></div></a>`; });
-  h+=`</div></section>`;
+  h+=`<section><h2 class="sec ruled">On your desk</h2>`;
+  if(pins.length){ h+=`<div class="slip">`;
+    pins.forEach(pid=>{ const p=byId[pid], s=stats(p), cb=current(p);
+      h+=`<a class="drow" href="#${p.id}"><span class="pt">${esc(p.title)}</span><span class="cnt">${s.d} of ${s.n}</span>
+        ${cb?`<span class="bt">${esc(B[cb.id].t)}</span><span class="ba">${esc(B[cb.id].a)}, ${pp(B[cb.id])} ${isNow(cb.id)?'<span class="lab out">Reading now</span>':'<span class="lab next">Up next</span>'}</span>`:'<span class="bt">Path complete</span>'}
+        ${strip(p,cb&&cb.id)}</a>`; });
+    h+=`</div><p class="note">Pin or unpin paths from their pages.</p>`; }
+  else h+=`<p class="note">Nothing pinned. Pin paths from their pages.</p>`;
+  h+=`</section>`;
   const nowOff = readingNow.filter(id=>!isDone(id) && !pins.some(pid=>current(byId[pid])?.id===id));
-  if(nowOff.length){ h+=`<section><h2 class="sec">Also reading now</h2>`;
-    nowOff.forEach(id=>{ const pid=appears[id]&&appears[id][0]; h+=`<a class="mini" href="#${pid||''}"><span><b>${esc(B[id].t)}</b><br><span class="muted small">${esc(B[id].a)}${pid?' · '+esc(byId[pid].title):''}</span></span></a>`; });
-    h+=`</section>`; }
-  h+=`<section><label class="eyebrow" for="q">Search books, authors or paths</label>
+  if(nowOff.length){ h+=`<section><h2 class="sec ruled">Also reading now</h2><div class="slip">`;
+    nowOff.forEach(id=>{ const pid=appears[id]&&appears[id][0]; h+=`<a class="drow" href="#${pid||''}"><span class="bt">${esc(B[id].t)}</span><span class="ba">${esc(B[id].a)}${pid?', in '+esc(byId[pid].title):''}</span></a>`; });
+    h+=`</div></section>`; }
+  h+=`<section><label class="field-label" for="q">Search books, authors or paths</label>
     <input id="q" class="search" type="search" placeholder="Try Joyce, memory, Kant…" autocomplete="off">
     <div id="hits"></div></section>`;
-  const pl=plan(), last=pl.terms[pl.terms.length-1];
-  const row=p=>{ const s=stats(p), full=s.d===s.n, pinned=pins.includes(p.id);
-    h+=`<a class="pl ${full?'full':''}" href="#${p.id}"><h3>${esc(p.title)}${pinned?' <span class="chip pin">On desk</span>':''}</h3>
-      <span class="c num">${s.d}/${s.n}</span>
-      <span class="q">${esc(p.question)}</span><div class="bar"><i style="width:${pct(s.d,s.n)}%"></i></div></a>`; };
+  const row=p=>{ const s=stats(p), pinned=pins.includes(p.id), cb=current(p);
+    h+=`<a class="pl" href="#${p.id}"><h3>${esc(p.title)}${pinned?'<span class="lab desk">On desk</span>':''}</h3>
+      <span class="c">${s.d} of ${s.n}</span>
+      <span class="q">${esc(p.question)}</span>${strip(p,cb&&cb.id)}</a>`; };
   pl.terms.forEach(x=>{
-    h+=`<h2 class="group"><span class="mvn">Semester ${x.n}, ${esc(x.range)}${x.n===1?' (current)':''}</span>${esc(x.label)}</h2>
-      <p class="mvb">${x.paths.length} path${x.paths.length>1?'s':''}, about ${fmt(Math.round(x.used/100)*100)} pages to go</p>`;
-    x.paths.forEach(p=>row(p));
+    h+=`<section class="term"><h2 class="ruled">${x.n===1?'This term':esc(x.label)}</h2>
+      <p class="note">${MON[x.t.s]} to ${MON[x.t.s+3]}. ${x.paths.length} path${x.paths.length>1?'s':''}, about ${fmt(Math.round(x.used/100)*100)} pages.</p>`;
+    x.paths.forEach(p=>row(p)); h+=`</section>`;
   });
-  if(pl.done.length){ h+=`<h2 class="group"><span class="mvn">Finished</span>Completed paths</h2>`; pl.done.forEach(p=>row(p)); }
+  if(pl.done.length){ h+=`<section class="term"><h2 class="ruled">Completed paths</h2>`; pl.done.forEach(p=>row(p)); h+=`</section>`; }
   h+=`<div class="foot">
     <p>Page counts marked ≈ are estimates. Links open Goodreads.</p>
     <details data-k="pace"><summary>Your reading pace</summary>
-      <label class="eyebrow" for="pace-in" style="display:block;margin-top:8px">Pages a month</label>
+      <label class="field-label" for="pace-in">Pages a month</label>
       <input id="pace-in" class="search" type="number" inputmode="numeric" min="500" step="250" value="${pace()}">
     </details>
     <details data-k="gr"><summary>Import from Goodreads</summary>
       <p>On goodreads.com, open My Books → Import and export → Export library, then pick the file here. Every book on your "read" shelf that appears in a path gets ticked.</p>
-      <label class="btn" for="gr-file" style="display:inline-block">Choose Goodreads export (.csv)</label>
+      <label class="btn" for="gr-file">Choose Goodreads export (.csv)</label>
       <input id="gr-file" type="file" accept=".csv,text/csv" style="position:absolute;left:-9999px">
       <p id="gr-msg" class="muted"></p>
     </details>
     <details data-k="bk"><summary>Back up or restore progress</summary>
       <p>Your progress lives in this browser${ref?' and syncs to your Claude account':''}. Copy a backup now and then; paste one here to restore it.</p>
       <button class="btn" type="button" id="bk-copy">Copy backup</button> <span id="bk-msg"></span>
-      <label class="eyebrow" for="bk-in" style="display:block;margin-top:12px">Paste a backup</label>
+      <label class="field-label" for="bk-in" style="margin-top:12px">Paste a backup</label>
       <textarea id="bk-in" spellcheck="false"></textarea>
       <button class="btn" type="button" id="bk-restore">Restore</button>
     </details></div></main>`;
   return h;
 }
 function rungHTML(b,i,p,nowId){
-  const optional=!!b.o, bk=B[b.id], d=isDone(b.id), term=b.id===p.terminal, now=b.id===nowId;
+  const optional=!!b.o, bk=B[b.id], d=isDone(b.id), term=b.id===p.terminal, now=b.id===nowId&&!d;
   const others=(appears[b.id]||[]).filter(x=>x!==p.id);
+  const status = isNow(b.id)?'<span class="lab out">Reading now</span>':(now?'<span class="lab next">Up next</span>':'');
   return `<div class="rung ${d?'done':''} ${now?'now':''} ${optional?'opt':''}">
-    <div class="n">${d?'✓':String(i+1).padStart(2,'0')}</div>
+    <div class="n">${i+1}</div>
     <div><div class="title">${esc(bk.t)}</div><div class="by">${esc(bk.a)}</div>
       <p>${esc(b.d)}</p>
-      <div class="chips"><span class="num">${pp(bk)}</span>
-        ${now?(isNow(b.id)?'<span class="chip nowr">Reading now</span>':'<span class="chip now">Up next</span>'):(isNow(b.id)?'<span class="chip nowr">Reading now</span>':'')}
-        ${optional?'<span class="chip optc">Optional</span>':''}
-        ${term?'<span class="chip final">Final book</span>':''}
-        ${b.w?'<span class="chip wild">Wildcard</span>':''}
-        ${b.s?'<span class="chip sel">Read the selection</span>':''}
-        ${others.length?`<span class="chip">Also in ${others.length} other path${others.length>1?'s':''}</span>`:''}
-        ${bk.u?`<a href="${esc(bk.u)}" rel="noopener">Goodreads ↗</a>`:''}</div>
-      <label class="check"><input type="checkbox" data-book="${esc(b.id)}" ${d?'checked':''}><span>${d?'Read':'Mark as read'}</span></label>
+      <div class="labs"><span>${pp(bk)}</span>${status}
+        ${optional?'<span class="lab">Optional</span>':''}
+        ${term?'<span class="lab final">Final book</span>':''}
+        ${b.w?'<span class="lab wild">Wildcard</span>':''}
+        ${b.s?'<span class="lab sel">Read the selection</span>':''}
+        ${others.length?`<span class="lab">Also in ${others.length} other path${others.length>1?'s':''}</span>`:''}
+        ${bk.u?`<a href="${esc(bk.u)}" rel="noopener">On Goodreads</a>`:''}</div>
+      <div class="act"><label class="check"><input type="checkbox" data-book="${esc(b.id)}" ${d?'checked':''}><span>${d?'Read':'Mark as read'}</span></label>
+      <div class="date">${d?`<span class="stamp${freshStamp===b.id?' fresh':''}" style="--r:${tilt(b.id)}">${stampText(b.id)}</span>`:''}</div></div>
     </div></div>`;
 }
 function viewPath(p){
   const s=stats(p), i=PATHS.indexOf(p), nowB=current(p), nowId=nowB?nowB.id:null, pinned=pinsList().includes(p.id);
+  const tx=plan().termByPath[p.id];
   let h=`<header class="band"><div class="col">${topbar()}
-    <a class="back" href="#">← All paths</a>
-    <div class="eyebrow" style="margin-top:16px">${(()=>{ const x=plan().termByPath[p.id]; return x?`Semester ${x.n}, ${esc(x.label)}`:'Completed'; })()}</div>
-    <h1 style="margin-top:4px">${esc(p.title)}</h1>
+    <a class="back" href="#">${CHEV_L}All paths</a>
+    <h1 style="margin-top:8px">${esc(p.title)}</h1>
     <p class="q">${esc(p.question)}</p>
-    <div class="bar"><i style="width:${pct(s.d,s.n)}%"></i></div>
-    <button type="button" class="pinbtn" data-pin="${esc(p.id)}">${pinned?'Unpin from your desk':'Pin to your desk'}</button>
-    <div class="stats"><span class="num">${s.d}/${s.n} read</span><span class="num">${fmt(s.left)} of ${fmt(s.pages)} pp. to go</span>${s.asg?'<span>Essay written</span>':''}</div>
+    <div class="meta"><span>${tx?esc(tx.label):'Completed'}</span><span>${s.d} of ${s.n} read</span><span>${fmt(s.left)} of ${fmt(s.pages)} pp. to go</span>${s.asg?'<span>Essay written</span>':''}</div>
+    <button type="button" class="pinbtn" data-pin="${esc(p.id)}" aria-pressed="${pinned}">${pinned?'Pinned to your desk':'Pin to your desk'}</button>
   </div></header><main class="col">
   <section><p class="why">${esc(p.why)}</p></section>
-  <section><h2 style="font-size:22px">The path</h2>`;
+  <section><h2 class="sec ruled">The path</h2>`;
   p.rungs.forEach((b,k)=>h+=rungHTML(b,k,p,nowId));
-  h+=`</section><section><div class="panel"><div class="eyebrow">Final assignment</div><p>${esc(p.assignment)}</p>
-    <div class="eyebrow" style="margin-top:12px">A convincing response</div><p>${esc(p.criteria)}</p>
+  h+=`</section><section><div class="slip panel"><h3>Final assignment</h3><p>${esc(p.assignment)}</p>
+    <h3>A convincing response</h3><p>${esc(p.criteria)}</p>
     <label class="check"><input type="checkbox" data-asg="${esc(p.id)}" ${s.asg?'checked':''}><span>${s.asg?'Essay written':'Mark essay written'}</span></label></div></section>`;
   h+=`<section>`;
   if(p.sources&&p.sources.length){ h+=`<details data-k="src"><summary>Sources and companions</summary>`;
-    p.sources.forEach(x=>h+=`<div style="padding:0 0 12px"><a href="${esc(x.url)}" rel="noopener">${esc(x.title)}</a><div class="muted" style="font-size:14px">${esc(x.note||'')}</div></div>`);
+    p.sources.forEach(x=>h+=`<div class="src"><a href="${esc(x.url)}" rel="noopener">${esc(x.title)}</a><div class="muted small">${esc(x.note||'')}</div></div>`);
     h+=`</details>`; }
-  h+=`</section><section class="pager">${i>0?`<a href="#${PATHS[i-1].id}">← ${esc(PATHS[i-1].title)}</a>`:'<span></span>'}${i<PATHS.length-1?`<a href="#${PATHS[i+1].id}" style="text-align:right">${esc(PATHS[i+1].title)} →</a>`:''}</section></main>`;
+  h+=`</section><section class="pager">${i>0?`<a href="#${PATHS[i-1].id}">${CHEV_L}<span>${esc(PATHS[i-1].title)}</span></a>`:''}${i<PATHS.length-1?`<a class="nx" href="#${PATHS[i+1].id}"><span>${esc(PATHS[i+1].title)}</span>${CHEV_R}</a>`:''}</section></main>`;
   return h;
 }
 function searchHits(q){
   q=q.trim().toLowerCase(); if(q.length<2) return '';
   const out=[];
-  PATHS.forEach(p=>{ if((p.title+' '+p.question+' '+p.group).toLowerCase().includes(q)) out.push(`<div class="hit"><a href="#${p.id}">${esc(p.title)}</a> <span class="muted">(path)</span></div>`); });
+  PATHS.forEach(p=>{ if((p.title+' '+p.question).toLowerCase().includes(q)) out.push(`<div class="hit"><a href="#${p.id}">${esc(p.title)}</a> <span class="muted">(path)</span></div>`); });
   PATHS.forEach(p=>p.rungs.map(b=>[b,b.o?0:1]).forEach(([b,core])=>{
     const bk=B[b.id]; if((bk.t+' '+bk.a).toLowerCase().includes(q))
       out.push(`<div class="hit"><a href="#${p.id}">${esc(bk.t)}</a> <span class="muted">by ${esc(bk.a)}, in ${esc(p.title)}${core?'':' (optional)'}${isDone(b.id)?', read':''}</span></div>`); }));
@@ -366,7 +412,7 @@ function render(){
   const fq=document.activeElement&&document.activeElement.id==='q';
   const view=id, open=new Set([...app.querySelectorAll('details[open][data-k]')].map(d=>d.dataset.k));
   const keep=(render.view===view);
-  if(byId[id]){ app.innerHTML=viewPath(byId[id]); document.title=byId[id].title+' · Reading Paths'; }
+  if(byId[id]){ app.innerHTML=viewPath(byId[id]); document.title=byId[id].title+' | Reading Paths'; }
   else{ app.innerHTML=viewHome(); document.title='Reading Paths';
     const q=document.getElementById('q'); q.value=lastQ; document.getElementById('hits').innerHTML=searchHits(lastQ); if(fq) q.focus(); }
   if(keep) app.querySelectorAll('details[data-k]').forEach(d=>{ if(open.has(d.dataset.k)) d.open=true; });
@@ -375,7 +421,7 @@ function render(){
 }
 document.addEventListener('change',e=>{
   const t=e.target;
-  if(t.dataset.book){ state.done[t.dataset.book]=t.checked?1:0; scheduleSave(); render(); }
+  if(t.dataset.book){ setRead(t.dataset.book,t.checked,today()); freshStamp=t.checked?t.dataset.book:null; scheduleSave(); render(); freshStamp=null; }
   if(t.dataset.asg){ if(t.checked) state.asg[t.dataset.asg]=1; else delete state.asg[t.dataset.asg]; scheduleSave(); render(); }
 });
 document.addEventListener('input',e=>{ if(e.target.id==='pace-in'){ const v=Number(e.target.value); if(v>=500){ state.pace=v; clearTimeout(window.__pt); window.__pt=setTimeout(()=>{ scheduleSave(); render(); },600); } return; } if(e.target.id==='q'){ lastQ=e.target.value; document.getElementById('hits').innerHTML=searchHits(lastQ); } });
@@ -384,13 +430,13 @@ document.addEventListener('click',async e=>{
   if(pb){ const id=pb.dataset.pin; let ps=pinsList().slice(); ps=ps.includes(id)?ps.filter(x=>x!==id):[...ps,id]; state.pins=ps; scheduleSave(); render(); return; }
   if(e.target.id==='bk-copy'){
     const m=document.getElementById('bk-msg');
-    try{ await navigator.clipboard.writeText(JSON.stringify({v:1,done:state.done,asg:state.asg,rev:state.rev,gr:state.gr})); m.textContent='Copied.'; }
-    catch(err){ const ta=document.getElementById('bk-in'); ta.value=JSON.stringify({v:1,done:state.done,asg:state.asg}); ta.select(); m.textContent='Copy blocked: the backup is in the box below, selected.'; }
+    try{ await navigator.clipboard.writeText(JSON.stringify({v:2,done:state.done,asg:state.asg,rev:state.rev,gr:state.gr,dt:state.dt,pins:state.pins,pace:state.pace})); m.textContent='Copied.'; }
+    catch(err){ const ta=document.getElementById('bk-in'); ta.value=JSON.stringify({v:2,done:state.done,asg:state.asg,rev:state.rev,gr:state.gr,dt:state.dt,pins:state.pins,pace:state.pace}); ta.select(); m.textContent='Copy blocked: the backup is in the box below, selected.'; }
   }
   if(e.target.id==='bk-restore'){
     const m=document.getElementById('bk-msg');
     try{ const d=JSON.parse(document.getElementById('bk-in').value); if(!d||typeof d.done!=='object') throw 0;
-      state={done:d.done||{},asg:d.asg||{},rev:d.rev||D.rev||0,gr:d.gr||state.gr||{}}; scheduleSave(); render(); }
+      state={done:d.done||{},asg:d.asg||{},rev:d.rev||D.rev||0,gr:d.gr||state.gr||{},dt:d.dt||{},pins:d.pins||state.pins||null,pace:d.pace||state.pace||null}; scheduleSave(); render(); }
     catch(err){ m.textContent='That doesn’t look like a backup.'; }
   }
 });
@@ -413,14 +459,15 @@ document.addEventListener('change', async e=>{
   const file=e.target.files&&e.target.files[0], msg=document.getElementById('gr-msg'); if(!file) return;
   try{
     const rows=parseCSV(await file.text()); const h=rows.shift().map(x=>x.trim());
-    const ci=n=>h.indexOf(n), iId=ci('Book Id'), iT=ci('Title'), iA=ci('Author'), iS=ci('Exclusive Shelf');
+    const ci=n=>h.indexOf(n), iId=ci('Book Id'), iT=ci('Title'), iA=ci('Author'), iS=ci('Exclusive Shelf'), iD=ci('Date Read');
     if(iT<0||iS<0) throw new Error('not a Goodreads export');
     let ticked=0, already=0, readCount=0; const seen=new Set();
     rows.forEach(r=>{ if(r[iS]!=='read') return; readCount++;
       const ids=new Set(); if(B[r[iId]]) ids.add(r[iId]); (keyIndex[normT(r[iT])+'|'+lastN(r[iA])]||[]).forEach(x=>ids.add(x));
-      ids.forEach(id=>{ if(seen.has(id)) return; seen.add(id); if(isDone(id)) already++; else { state.done[id]=1; ticked++; } }); });
+      const dr=iD>=0&&/^(\d{4})\/(\d{2})\/(\d{2})/.exec(r[iD]||''), date=dr?`${dr[1]}-${dr[2]}-${dr[3]}`:null;
+      ids.forEach(id=>{ if(seen.has(id)) return; seen.add(id); if(date){ state.dt ||= {}; if(!state.dt[id]) state.dt[id]=date; } if(isDone(id)) already++; else { state.done[id]=1; ticked++; } }); });
     scheduleSave(); render();
-    const m=document.getElementById('gr-msg'); if(m) m.textContent=`Read ${readCount} books from your export. Ticked ${ticked} new book${ticked===1?'':'s'}; ${already} were already ticked.`;
+    const m=document.getElementById('gr-msg'); if(m) m.textContent=`Read ${readCount} books from your export. Ticked ${ticked} new book${ticked===1?'':'s'}. ${already} were already ticked.`;
   }catch(err){ const m=document.getElementById('gr-msg'); if(m) m.textContent='That file doesn’t look like a Goodreads library export.'; }
   e.target.value='';
 });
@@ -444,9 +491,9 @@ function finishGr(list, nowList){
   clearTimeout(grTimer); if(grFrame){ grFrame.remove(); grFrame=null; }
   const time=new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
   if(!list || !list.length){ render(); setGr('Couldn’t reach Goodreads. The app will try again later.'); return; }
-  let added=0; state.gr ||= {};
+  let added=0; state.gr ||= {}; const seasoned=Object.keys(state.gr).length>0;
   list.forEach(([t,a])=>{ (keyIndex[normT(t)+'|'+lastN(a)]||[]).forEach(id=>{
-    if(state.gr[id]) return; state.gr[id]=1; if(!isDone(id)){ state.done[id]=1; added++; } }); });
+    if(state.gr[id]) return; state.gr[id]=1; if(!isDone(id)){ setRead(id,true,seasoned?today():null); added++; } }); });
   scheduleSave(); render();
   setGr(`Synced with Goodreads at ${time}.${added?` Ticked ${added} new book${added>1?'s':''}.`:''}`);
 }
