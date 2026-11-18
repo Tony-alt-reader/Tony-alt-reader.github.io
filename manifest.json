@@ -4,7 +4,7 @@
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
- "background_color": "#13111a",
+ "background_color": "#131019",
  "theme_color": "#2c1670",
  "icons": [
   {
@@ -18,7 +18,7 @@
    "type": "image/png"
   },
   {
-   "src": "icon-512.png",
+   "src": "icon-maskable-512.png",
    "sizes": "512x512",
    "type": "image/png",
    "purpose": "maskable"

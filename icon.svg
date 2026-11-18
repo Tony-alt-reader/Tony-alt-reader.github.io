@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- Reading Paths app icon: violet-deep ground, a winding path of rungs (lavender) rising to a destination (white), one spark marker. -->
-  <rect width="1024" height="1024" fill="#2c1670"/>
-  <circle cx="820" cy="190" r="300" fill="#3a1f8f"/>
-  <path d="M230 840 C 120 640, 560 690, 500 500 S 720 300, 780 230"
-        fill="none" stroke="#b39dff" stroke-width="64" stroke-linecap="round" stroke-dasharray="2 112" stroke-dashoffset="-100"/>
-  <circle cx="780" cy="230" r="70" fill="#ffffff"/>
-  <circle cx="230" cy="840" r="46" fill="#f08fbf"/>
+<rect width="1024" height="1024" fill="#2c1670"/>
+<g transform="translate(512 512) rotate(-4) scale(1.0) translate(-512 -512)">
+<rect x="212" y="160" width="600" height="704" rx="8" fill="#ffffff"/>
+<rect x="268" y="222" width="236" height="30" rx="3" fill="#1a1724"/>
+<path d="M268 296H756M268 316H756" stroke="#c13a33" stroke-width="8"/>
+<rect x="268.0" y="388" width="104" height="104" rx="4" fill="#5a2fd4"/><rect x="396.0" y="388" width="104" height="104" rx="4" fill="#5a2fd4"/><rect x="524.0" y="388" width="104" height="104" rx="4" fill="#5a2fd4"/><rect x="652.0" y="388" width="104" height="104" rx="4" fill="#5a2fd4"/><rect x="268.0" y="516" width="104" height="104" rx="4" fill="#5a2fd4"/><rect x="396.0" y="516" width="104" height="104" rx="4" fill="#5a2fd4"/><rect x="532.0" y="524" width="88" height="88" rx="2" fill="none" stroke="#5a2fd4" stroke-width="16"/><rect x="655.0" y="519" width="98" height="98" rx="2" fill="none" stroke="#c6cddd" stroke-width="6" stroke-dasharray="none"/><rect x="271.0" y="647" width="98" height="98" rx="2" fill="none" stroke="#c6cddd" stroke-width="6" stroke-dasharray="none"/><rect x="399.0" y="647" width="98" height="98" rx="2" fill="none" stroke="#c6cddd" stroke-width="6" stroke-dasharray="14 10"/><rect x="527.0" y="647" width="98" height="98" rx="2" fill="none" stroke="#c6cddd" stroke-width="6" stroke-dasharray="none"/><rect x="655.0" y="647" width="98" height="98" rx="2" fill="none" stroke="#c6cddd" stroke-width="6" stroke-dasharray="none"/>
+</g>
 </svg>
